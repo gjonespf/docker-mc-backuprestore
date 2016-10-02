@@ -13,8 +13,11 @@ if [ "$UPLOAD_DEST" ]; then
    echo "Dest: $UPLOAD_DEST/$UPLOAD_DEST_BUCKET - $UPLOAD_DEST_KEY"
    mc ls s3-dest
 
-   DEST=s3-dest/$UPLOAD_DEST_BUCKET
-   mc mb $DEST
+   if [ "$UPLOAD_DEST_BUCKET" ]; then
+      echo "Ensuring dest bucket '$UPLOAD_DEST_BUCKET' exists"
+      DEST=s3-dest/$UPLOAD_DEST_BUCKET
+      mc mb $DEST
+   fi
 fi
 
 if [ "$UPLOAD_SOURCE_FOLDER" ]; then
