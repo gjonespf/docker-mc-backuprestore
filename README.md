@@ -23,3 +23,7 @@ Env vars:
 - $UPLOAD_DEST_FOLDER - alternative dest folder, instead of a s3 server
 
 - $UPLOAD_OPTIONS - Options for mc - you probably want to at least set this to UPLOAD_OPTIONS=--quiet
+
+On Docker hub as:
+- https://hub.docker.com/r/gavinjonespf/docker-mc-backuprestore/
+- docker pull gavinjonespf/docker-mc-backuprestore
