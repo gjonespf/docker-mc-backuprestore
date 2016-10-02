@@ -1,5 +1,10 @@
-FROM gavinjonespf/docker-toolbox:latest
-COPY ./scripts /scripts
-RUN chmod a+x /scripts/*
+FROM gavinjonespf/docker-croney:latest
 
-ENTRYPOINT [ "/scripts/mc-mirror-src2dest.sh" ]
+#Minio client
+RUN			curl -L https://dl.minio.io/client/mc/release/linux-amd64/mc > /usr/local/bin/mc && \
+				chmod +x /usr/local/bin/mc
+
+COPY        ./scripts /scripts
+RUN         chmod a+x /scripts/*
+
+#ENTRYPOINT [ "/scripts/mc-mirror-src2dest.sh" ]
