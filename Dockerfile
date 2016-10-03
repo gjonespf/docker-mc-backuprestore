@@ -7,4 +7,4 @@ RUN			curl -L https://dl.minio.io/client/mc/release/linux-amd64/mc > /usr/local/
 COPY        ./scripts /scripts
 RUN         chmod a+x /scripts/*
 
-#ENTRYPOINT [ "/scripts/mc-mirror-src2dest.sh" ]
+ENTRYPOINT [ "/app/scripts/start.sh" ]
