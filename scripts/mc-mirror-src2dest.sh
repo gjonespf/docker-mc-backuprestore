@@ -43,9 +43,28 @@ if [ "$UPLOAD_DEST_BUCKET" ] || [ "$UPLOAD_DEST_FOLDER" ]; then
 
 else
 
-   #Testing
-   echo "Using: mc mirror $UPLOAD_OPTIONS $SOURCE $DEST"
-   mc mirror $UPLOAD_OPTIONS $SOURCE $DEST
-   
+   srcbuckets=$(mc --json ls $SOURCE \
+   | sed 's/"size":0,//' \
+   | sed -re 's/"lastModified":"[0-9.T:+-]*",//' \
+   | sed '$ ! s/$/,/' )
+   srcbuckets=$(echo "[ $srcbuckets ]")
+   #echo "$srcbuckets"
+
+   declare -A assoc_array="($(
+   echo "$srcbuckets" \
+   | jq '.[]  | "[" + .key + "]=\"" +.status + "\""' -r
+   ))"
+
+   for key in ${!assoc_array[@]}; do 
+      echo "Working on src directory $key"
+      bucketname=$key;
+      status=${assoc_array[$key]};
+
+      destbucket=$DEST/$bucketname
+      echo "Dest: $destbucket"
+
+      mc mb $destbucket
+      mc --quiet mirror $SOURCE/$bucketname $destbucket
+   done  
 
 fi
