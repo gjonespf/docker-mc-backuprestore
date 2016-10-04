@@ -38,7 +38,7 @@ fi
 if [ "$UPLOAD_DEST_BUCKET" ] || [ "$UPLOAD_DEST_FOLDER" ]; then
 
    #TODO: Check source and dest...
-   echo "Using: mc mirror $UPLOAD_OPTIONS $SOURCE $DEST"
+   echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE' '$DEST'"
    mc mirror $UPLOAD_OPTIONS $SOURCE $DEST
 
 else
@@ -56,15 +56,16 @@ else
    ))"
 
    for key in ${!assoc_array[@]}; do 
-      echo "Working on src directory $key"
+      echo "- Working on src directory $key"
       bucketname=$key;
       status=${assoc_array[$key]};
 
       destbucket=$DEST/$bucketname
-      echo "Dest: $destbucket"
+      #echo "Dest: $destbucket"
 
       mc mb $destbucket
-      mc --quiet mirror $SOURCE/$bucketname $destbucket
+      echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE/$bucketname' '$destbucket'"
+      mc mirror $UPLOAD_OPTIONS $SOURCE/$bucketname $destbucket
    done  
 
 fi
