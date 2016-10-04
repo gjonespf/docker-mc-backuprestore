@@ -3,8 +3,7 @@
 Simple backup & restore image using Minio.
 
 - Base on croney, which is an alpine glibc hack with devcron, allowing simple cron like scripts
-- Run one time mirror using /scripts/mc-mirror-src2dest.sh
-
+- Alternatively, run one time mirror using /scripts/mc-mirror-src2dest.sh (e.g. using "entrypoint: /scripts/mc-mirror-src2dest.sh")
 
 Env vars:
 

@@ -23,7 +23,7 @@ services:
       restart: never
       volumes:
          - docker-mc-backuprestore-test:/export/
-      command: /scripts/mc-mirror-src2dest.sh
+      entrypoint: /scripts/mc-mirror-src2dest.sh
       environment: 
          - UPLOAD_SOURCE_FOLDER=/export/src/
          - UPLOAD_DEST=http://minio-test:9000
