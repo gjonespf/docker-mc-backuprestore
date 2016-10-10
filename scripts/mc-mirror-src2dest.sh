@@ -1,5 +1,10 @@
 #!/bin/bash
 
+echo "Using env:"
+echo "==================================="
+env
+echo "==================================="
+
 if [ "$UPLOAD_SOURCE" ]; then
    mc config host add "s3-src" "$UPLOAD_SOURCE" "$UPLOAD_SOURCE_KEY" "$UPLOAD_SOURCE_SECRET" S3v4 
    echo "Source: $UPLOAD_SOURCE/$UPLOAD_SOURCE_BUCKET - $UPLOAD_SOURCE_KEY"
@@ -35,37 +40,58 @@ if [ "$UPLOAD_DEST_FOLDER" ]; then
    DEST=$UPLOAD_DEST_FOLDER
 fi
 
-if [ "$UPLOAD_DEST_BUCKET" ] || [ "$UPLOAD_DEST_FOLDER" ]; then
+function dobucketsmirror()
+{
+    declare -A assoc_array="($(
+    echo "$srcbuckets" \
+    | jq '.[]  | "[" + .key + "]=\"" +.status + "\""' -r
+    ))"
 
-   #TODO: Check source and dest...
-   echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE' '$DEST'"
-   mc mirror $UPLOAD_OPTIONS $SOURCE $DEST
+    for key in ${!assoc_array[@]}; do 
+        echo "- Working on src directory $key"
+        bucketname=$key;
+        status=${assoc_array[$key]};
 
+        destbucket=$DEST/$bucketname
+        #echo "Dest: $destbucket"
+
+        if [ ! "$UPLOAD_DEST_BUCKET" ]; then
+            mc mb $destbucket
+        fi
+
+        echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE/$bucketname' '$destbucket'"
+        mc mirror $UPLOAD_OPTIONS $SOURCE/$bucketname $destbucket
+    done
+}
+
+#Get a list of source buckets/folders
+srcbuckets=$(mc --json ls $SOURCE \
+| sed 's/"size":0,//' \
+| sed -re 's/"lastModified":"[0-9.T:+-]*",//' \
+| sed '$ ! s/$/,/' )
+srcbuckets=$(echo "[ $srcbuckets ]")
+
+if [ ! "$UPLOAD_SOURCE_BUCKET" ] && [ ! "$UPLOAD_SOURCE_FOLDER" ]; then
+    echo "No source bucket listed, will iterate over source buckets"
+
+    dobucketsmirror
+     
 else
+    if [ "$UPLOAD_DEST_BUCKET" ] || [ "$UPLOAD_DEST_FOLDER" ]; then
 
-   srcbuckets=$(mc --json ls $SOURCE \
-   | sed 's/"size":0,//' \
-   | sed -re 's/"lastModified":"[0-9.T:+-]*",//' \
-   | sed '$ ! s/$/,/' )
-   srcbuckets=$(echo "[ $srcbuckets ]")
-   #echo "$srcbuckets"
+        #TODO: Check source and dest...
+        echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE' '$DEST'"
+        mc mirror $UPLOAD_OPTIONS $SOURCE $DEST
 
-   declare -A assoc_array="($(
-   echo "$srcbuckets" \
-   | jq '.[]  | "[" + .key + "]=\"" +.status + "\""' -r
-   ))"
+    else
+        echo "No dest bucket listed, will iterate over source folders and create dest buckets from these"
 
-   for key in ${!assoc_array[@]}; do 
-      echo "- Working on src directory $key"
-      bucketname=$key;
-      status=${assoc_array[$key]};
+        dobucketsmirror
 
-      destbucket=$DEST/$bucketname
-      #echo "Dest: $destbucket"
-
-      mc mb $destbucket
-      echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE/$bucketname' '$destbucket'"
-      mc mirror $UPLOAD_OPTIONS $SOURCE/$bucketname $destbucket
-   done  
-
+    fi
 fi
+
+
+ 
+
+
