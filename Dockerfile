@@ -4,7 +4,7 @@ FROM gavinjonespf/docker-croney:latest
 RUN			curl -L https://dl.minio.io/client/mc/release/linux-amd64/mc > /usr/local/bin/mc && \
 				chmod +x /usr/local/bin/mc
 
-COPY        ./scripts /scripts
-RUN         chmod a+x /scripts/*
+COPY        ./scripts /app/scripts
+RUN         chmod a+x /app/scripts/*
 
 ENTRYPOINT [ "/app/scripts/start.sh" ]

@@ -61,6 +61,7 @@ function dobucketsmirror()
 
         echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE/$bucketname' '$destbucket'"
         mc mirror $UPLOAD_OPTIONS $SOURCE/$bucketname $destbucket
+        echo "Mirror complete for '$UPLOAD_OPTIONS' '$SOURCE/$bucketname' '$destbucket'"
     done
 }
 
