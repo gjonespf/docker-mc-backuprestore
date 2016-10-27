@@ -1,9 +1,11 @@
 #!/bin/bash
 
+if [ "$VERBOSE" ]; then
 echo "Using env:"
 echo "==================================="
 env
 echo "==================================="
+fi
 
 if [ "$UPLOAD_SOURCE" ]; then
    mc config host add "s3-src" "$UPLOAD_SOURCE" "$UPLOAD_SOURCE_KEY" "$UPLOAD_SOURCE_SECRET" S3v4 
