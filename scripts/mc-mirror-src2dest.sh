@@ -4,7 +4,14 @@ if [ "$VERBOSE" ]; then
 echo "Using env:"
 echo "==================================="
 env
+echo "Using parms (passed in, will replace UPLOAD_OPTIONS):"
+echo "Total $# arguments: $*"
 echo "==================================="
+fi
+
+#Use passed in arguments to override options to MC
+if [ -n "$1" ]; then
+    UPLOAD_OPTIONS=$*
 fi
 
 if [ "$UPLOAD_SOURCE" ]; then
