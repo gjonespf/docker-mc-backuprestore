@@ -2,7 +2,7 @@
 
 Simple backup & restore image using Minio.
 
-- Base on croney, which is an alpine glibc hack with devcron, allowing simple cron like scripts
+- Base on https://github.com/gjonespf/docker-croney, which is an alpine glibc hack with devcron, allowing simple cron like scripts
 - Alternatively, run one time mirror using /scripts/mc-mirror-src2dest.sh (e.g. using "entrypoint: /app/scripts/mc-mirror-src2dest.sh")
 
 Env vars:
