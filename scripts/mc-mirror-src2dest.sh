@@ -35,7 +35,7 @@ if [ "$UPLOAD_DEST" ]; then
    else
       echo "No dest bucket, we will iterate over source and create a bucket for each folder in src"
       DEST=s3-dest
-      mc ls $DEST
+      #mc ls $DEST
    fi
 fi
 
@@ -51,15 +51,16 @@ fi
 
 function dobucketsmirror()
 {
-    declare -A assoc_array="($(
-    echo "$srcbuckets" \
-    | jq '.[]  | "[" + .key + "]=\"" +.status + "\""' -r
-    ))"
+    srcbuckets=$1
+    #echo "srcbuckets: '$srcbuckets'"
+    bucketdata=$( echo "$srcbuckets" | sed -e 's:[/]::g' |  jq '.[]  | "" + .key + ""' -r)
+    #echo "$bucketdata"
 
-    for key in ${!assoc_array[@]}; do 
+#    for key in ${assoc_array[@]}; do 
+    for key in $bucketdata; do 
         echo "- Working on src directory $key"
         bucketname=$key;
-        status=${assoc_array[$key]};
+        #status=${assoc_array[$key]};
 
         destbucket=$DEST/$bucketname
         #echo "Dest: $destbucket"
@@ -80,11 +81,12 @@ srcbuckets=$(mc --json ls $SOURCE \
 | sed -re 's/"lastModified":"[0-9.T:+-]*",//' \
 | sed '$ ! s/$/,/' )
 srcbuckets=$(echo "[ $srcbuckets ]")
+#echo "Source: $srcbuckets"
 
 if [ ! "$UPLOAD_SOURCE_BUCKET" ] && [ ! "$UPLOAD_SOURCE_FOLDER" ]; then
     echo "No source bucket listed, will iterate over source buckets"
 
-    dobucketsmirror
+    dobucketsmirror "$srcbuckets"
      
 else
     if [ "$UPLOAD_DEST_BUCKET" ] || [ "$UPLOAD_DEST_FOLDER" ]; then
@@ -96,7 +98,7 @@ else
     else
         echo "No dest bucket listed, will iterate over source folders and create dest buckets from these"
 
-        dobucketsmirror
+        dobucketsmirror "$srcbuckets"
 
     fi
 fi
