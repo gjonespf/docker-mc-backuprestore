@@ -70,7 +70,7 @@ function dobucketsmirror
         fi
 
         echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE/$bucketname' '$destbucket'"
-        mc mirror $UPLOAD_OPTIONS $SOURCE/$bucketname $destbucket
+        mc mirror $UPLOAD_OPTIONS --exclude ".*" $SOURCE/$bucketname $destbucket
         echo "Mirror complete for '$UPLOAD_OPTIONS' '$SOURCE/$bucketname' '$destbucket'"
     done
 }
@@ -93,7 +93,7 @@ else
 
         #TODO: Check source and dest...
         echo "Using: mc mirror '$UPLOAD_OPTIONS' '$SOURCE' '$DEST'"
-        mc mirror $UPLOAD_OPTIONS $SOURCE $DEST
+        mc mirror $UPLOAD_OPTIONS --exclude ".*" $SOURCE $DEST
 
     else
         echo "No dest bucket listed, will iterate over source folders and create dest buckets from these"
