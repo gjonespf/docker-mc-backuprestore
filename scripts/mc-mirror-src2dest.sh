@@ -49,7 +49,7 @@ if [ "$UPLOAD_DEST_FOLDER" ]; then
    DEST=$UPLOAD_DEST_FOLDER
 fi
 
-function dobucketsmirror()
+function dobucketsmirror
 {
     srcbuckets=$1
     #echo "srcbuckets: '$srcbuckets'"

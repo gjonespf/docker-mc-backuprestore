@@ -23,6 +23,10 @@ Env vars:
 
 - $UPLOAD_OPTIONS - Options for mc - you probably want to at least set this to UPLOAD_OPTIONS=--quiet
 
+Testing:
+- Explore image using: docker run -it --entrypoint /bin/bash gavinjonespf/docker-mc-backuprestore
+- Test run using: docker run -it gavinjonespf/docker-mc-backuprestore /app/files/default-crontab
+
 On Docker hub as:
 - https://hub.docker.com/r/gavinjonespf/docker-mc-backuprestore/
 - docker pull gavinjonespf/docker-mc-backuprestore
