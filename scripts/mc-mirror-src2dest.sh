@@ -42,6 +42,9 @@ fi
 if [ "$UPLOAD_SOURCE_FOLDER" ]; then
    echo "Using source folder: $UPLOAD_SOURCE_FOLDER"
    SOURCE=$UPLOAD_SOURCE_FOLDER
+   # So we can see last updates
+   touch $UPLOAD_SOURCE_FOLDER/ztouch
+   date > $UPLOAD_SOURCE_FOLDER/ztouch
 fi
 
 if [ "$UPLOAD_DEST_FOLDER" ]; then
